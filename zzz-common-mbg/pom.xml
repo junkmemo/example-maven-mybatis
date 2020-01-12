@@ -1,0 +1,93 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>jp.mycomp.zzz</groupId>
+		<artifactId>zzz-parent</artifactId>
+		<version>1.0.0</version>
+		<relativePath>..\zzz-parent\</relativePath>
+	</parent>
+	<artifactId>zzz-common-mbg</artifactId>
+
+	<properties>
+		<!-- 本ファイルやgeneratorConfig.xmlで使用する定数 -->
+		<zzz.mbg.basedir>C:\jee7devkit\workspace\example-maven-mybatis</zzz.mbg.basedir>
+	</properties>
+
+	<!-- 独自プラグインの依存関係 -->
+	<!-- (mybatis-generator-pluginのためのものではない) -->
+	<dependencies>
+		<!-- mybatis-generator -->
+		<dependency>
+			<groupId>org.mybatis.generator</groupId>
+			<artifactId>mybatis-generator-core</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+		<!-- その他共通 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+
+		<plugins>
+
+			<!-- mybatis-generatorプラグイン定義 -->
+			<plugin>
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.4.0</version>
+				<configuration>
+					<!-- ★mybatis生成対象のプロジェクト設定を有効にしてください★ -->
+					<configurationFile>${basedir}/src/main/resources/generatorConfig_f10.xml</configurationFile>
+					<!-- <configurationFile>${basedir}/src/main/resources/generatorConfig_f20.xml</configurationFile> -->
+					<!-- <configurationFile>${basedir}/src/main/resources/generatorConfig_z10.xml</configurationFile> -->
+
+					<!-- mybatis生成時、既存クラス・XMLを上書 -->
+					<!-- (XMLがマージされるのを防止するためにgeneratorConfig.xmlで -->
+					<!-- UnmergeableXmlMappersPluginを宣言) -->
+					<overwrite>true</overwrite>
+				</configuration>
+				<dependencies>
+					<!-- プラグインで使用するJDBCドライバ(mariadb) -->
+					<dependency>
+						<groupId>org.mariadb.jdbc</groupId>
+						<artifactId>mariadb-java-client</artifactId>
+						<version>2.5.2</version>
+					</dependency>
+					<!-- 独自プラグイン(自プロジェクト)を依存関係に追加 -->
+					<!-- 注意)リポジトリに登録されているとそちらが優先されるので -->
+					<!-- installしないこと -->
+					<dependency>
+						<groupId>jp.mycomp.zzz</groupId>
+						<artifactId>zzz-common-mbg</artifactId>
+						<version>1.0.0</version>
+						<scope>system</scope>
+						<!-- installせずに自プロジェクト参照 -->
+						<systemPath>${zzz.mbg.basedir}\zzz-common-mbg\target\zzz-common-mbg-1.0.0.jar</systemPath>
+					</dependency>
+				</dependencies>
+				<executions>
+					<!-- package時に合わせてmybatis生成 -->
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+</project>

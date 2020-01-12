@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+	<!-- JDBCドライバはpom.xmlで定義済のため、ここで宣言不要 -->
+	<!-- <classPathEntry /> -->
+
+	<!-- サブシステム: f10用の定義 -->
+	<context id="f10" targetRuntime="MyBatis3">
+
+		<!-- プラグイン -->
+		<!-- * CDIでMapperを参照できるよう"@Mapper"を追加するプラグイン -->
+		<plugin
+			type="org.mybatis.generator.plugins.MapperAnnotationPlugin" />
+		<!-- * XMLをマージしない(mybatis-generator-pluginのoverwrite設定も参考のこと) -->
+		<plugin
+			type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
+		<!-- * 排他制御 -->
+		<plugin
+			type="jp.mycomp.zzz.common.mbg.plugin.OptimisticLockPlugin" />
+		<!-- * 暗号化/復号化 -->
+		<plugin
+			type="jp.mycomp.zzz.common.mbg.plugin.EncryptColumnPlugin">
+			<!-- 対象カラム(カンマ区切りで複数指定可) -->
+			<property name="columns" value="" />
+			<!-- 対象テーブル.カラム(カンマ区切りで複数指定可) -->
+			<property name="tableColumns" value="mst_employee.name_enc" />
+			<!-- INSERT/UPDATE時に使用される書式(@@はカラム名で置換) -->
+			<property name="encryptFormat"
+				value="aes_encrypt(@@, SHA2(@enckey))" />
+			<!-- SELECT時に使用される書式(@@はカラム名で置換) -->
+			<property name="decryptFormat"
+				value="aes_decrypt(@@, SHA2(@enckey))" />
+		</plugin>
+		<!-- * 共通Entity追加 -->
+		<plugin
+			type="jp.mycomp.zzz.common.mbg.plugin.AddBaseEntityPlugin">
+			<property name="baseClass"
+				value="jp.mycomp.zzz.common.entity.BaseEntity" />
+			<property name="excludeProperties"
+				value="createdTimestamp,createdUserid,
+				updatedTimestamp,updatedUserid,version" />
+		</plugin>
+
+		<!-- コメント生成の抑制 -->
+		<commentGenerator>
+			<property name="suppressDate" value="true" />
+			<property name="addRemarkComments" value="false" />
+		</commentGenerator>
+
+		<!-- DB接続 -->
+		<jdbcConnection driverClass="org.mariadb.jdbc.Driver"
+			connectionURL="jdbc:mariadb://192.168.220.3/mybatis_example"
+			userId="appuser" password="appuserpass" />
+
+		<!-- モデル生成 -->
+		<javaModelGenerator
+			targetPackage="jp.mycomp.zzz.f10.common.entity"
+			targetProject="${zzz.mbg.basedir}\zzz-f10-common\src\main\java" />
+
+		<!-- Mapper XML生成 -->
+		<sqlMapGenerator
+			targetPackage="jp.mycomp.zzz.f10.common.mapper"
+			targetProject="${zzz.mbg.basedir}\zzz-f10-common\src\main\resources" />
+
+		<!-- Mapper生成 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="jp.mycomp.zzz.f10.common.mapper"
+			targetProject="${zzz.mbg.basedir}\zzz-f10-common\src\main\java" />
+
+		<!-- 対象テーブル -->
+		<table schema="mybatis_example" tableName="%" modelType="flat" />
+
+	</context>
+</generatorConfiguration>
