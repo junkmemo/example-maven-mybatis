@@ -27,7 +27,7 @@
 			<!-- 対象カラム(カンマ区切りで複数指定可) -->
 			<property name="columns" value="" />
 			<!-- 対象テーブル.カラム(カンマ区切りで複数指定可) -->
-			<property name="tableColumns" value="mst_employee.name_enc" />
+			<property name="tableColumns" value="mst_employee.name" />
 			<!-- INSERT/UPDATE時に使用される書式(@@はカラム名で置換) -->
 			<property name="encryptFormat"
 				value="aes_encrypt(@@, SHA2(@enckey))" />
@@ -53,7 +53,7 @@
 
 		<!-- DB接続 -->
 		<jdbcConnection driverClass="org.mariadb.jdbc.Driver"
-			connectionURL="jdbc:mariadb://192.168.220.3/mybatis_example"
+			connectionURL="jdbc:mariadb://192.168.220.3/mybatis_example_f10"
 			userId="appuser" password="appuserpass" />
 
 		<!-- モデル生成 -->
